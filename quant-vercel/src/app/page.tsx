@@ -6,6 +6,7 @@ import {
   BarChart, Bar
 } from 'recharts';
 import { TrendingUp, Activity, PieChart as PieIcon, ShieldCheck, ClipboardList, Globe } from 'lucide-react';
+// @ts-ignore
 import Papa from 'papaparse';
 
 export default function Dashboard() {
