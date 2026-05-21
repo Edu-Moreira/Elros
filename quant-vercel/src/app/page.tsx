@@ -7,7 +7,7 @@ import {
 } from 'recharts';
 import { TrendingUp, Activity, PieChart as PieIcon, ShieldCheck, ClipboardList, Globe } from 'lucide-react';
 // @ts-ignore
-import Papa from 'papaparse';
+import * as Papa from 'papaparse';
 
 export default function Dashboard() {
   const [data, setData] = useState<any[]>([]);
