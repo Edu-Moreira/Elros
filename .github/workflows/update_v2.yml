@@ -3,6 +3,8 @@ on:
   schedule:
     - cron: '30 22 * * 1-5' # Roda 22:30 UTC
   workflow_dispatch:
+permissions:
+  contents: write
 
 jobs:
   update-v2:
