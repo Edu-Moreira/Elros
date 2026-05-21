@@ -1,6 +1,7 @@
 import subprocess
 import sys
 import os
+import config
 
 def main():
     # Garante que estamos no diretório correto para o import config funcionar
