@@ -1,0 +1,34 @@
+name: Update Quant System V2
+on:
+  schedule:
+    - cron: '30 22 * * 1-5' # Roda 22:30 UTC
+  workflow_dispatch:
+
+jobs:
+  update-v2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Run Fund Update
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: python QuantSystem_V2/run_all.py
+
+      - name: Sync Data to WebApp
+        run: |
+          mkdir -p quant-vercel/public/data
+          cp QuantSystem_V2/output/*.csv quant-vercel/public/data/
+
+      - name: Commit and Push changes
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add QuantSystem_V2/output/
+          git add quant-vercel/public/data/
+          git commit -m "chore: update V2 fund and web data" || exit 0
+          git push

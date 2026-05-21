@@ -1,0 +1,18 @@
+40%  DM Government (duration core)
+    - 20% IEF
+    - 10% IEI
+    - 10% BNDX
+
+30%  Investment Grade Credit
+    - 20% LQD
+    - 10% CEMB
+
+15%  EM Debt
+    - 10% EMB
+    - 5%  EMLC
+
+10%  Long Duration / Convexity
+    - 10% TLT
+
+5%   High Yield
+    - 5% HYG

@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+venv/
+env/
+
+# Dados (gerados pelo script)
+# Se quiser manter o histórico no git, comente a linha abaixo
+# funds/output/prices.csv
+# funds/output/macro_indicators.csv
+
+# Streamlit
+.streamlit/
