@@ -9,11 +9,24 @@ import config # Importa nosso novo config.py
 load_dotenv()
 
 def fetch_all_data():
-    os.makedirs(config.OUTPUT_DIR, exist_ok=True)
+    if not os.path.exists(config.OUTPUT_DIR):
+        os.makedirs(config.OUTPUT_DIR)
+    
+    # Configuração para evitar bloqueios do Yahoo Finance
+    import yfinance as yf
+    import requests
+    session = requests.Session()
+    session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'})
     
     # 1. Preços do Universo SAA
     print(f"Baixando preços para: {len(config.INVESTABLE_UNIVERSE)} ativos...")
-    prices = yf.download(config.INVESTABLE_UNIVERSE, period="10y")['Close']
+    raw_data = yf.download(config.INVESTABLE_UNIVERSE, period="10y", threads=False, session=session)
+    
+    if raw_data.empty or 'Close' not in raw_data:
+        print("ERRO: O Yahoo Finance bloqueou a requisição ou retornou dados vazios.")
+        return
+
+    prices = raw_data['Close'].ffill().bfill()
     
     # Remove tickers que falharam (colunas com todos os valores NaN)
     prices = prices.dropna(axis=1, how='all')
@@ -37,7 +50,7 @@ def fetch_all_data():
     # 3. Dados Brasileiros (IBOV, PTAX, CDI)
     print("Baixando dados brasileiros...")
     tickers_br = config.BR_BENCHMARKS
-    raw_br = yf.download(list(tickers_br.values()), period="10y")['Close']
+    raw_br = yf.download(list(tickers_br.values()), period="10y", session=session)['Close']
     
     # Mapeamento explícito para evitar erro de ordem alfabética
     br_data = pd.DataFrame(index=raw_br.index)
@@ -66,4 +79,10 @@ def fetch_all_data():
     br_data.to_csv(f"{config.OUTPUT_DIR}/br_data.csv")
 
 if __name__ == "__main__":
-    fetch_all_data()
+    import traceback
+    try:
+        fetch_all_data()
+    except Exception as e:
+        print(f"ERRO no data_fetch:\n{e}")
+        traceback.print_exc()
+        exit(1)

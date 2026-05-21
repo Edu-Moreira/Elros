@@ -8,10 +8,17 @@ import config
 
 def run_optimization():
     path_prices = f"{config.OUTPUT_DIR}/prices.csv"
-    if not os.path.exists(path_prices): return
-    
+    if not os.path.exists(path_prices):
+        print(f"Erro: {path_prices} não encontrado.")
+        return
+
     prices = pd.read_csv(path_prices, index_col=0, parse_dates=True)
     returns = prices.pct_change().dropna()
+    
+    if returns.empty:
+        print("Aviso: Dados de retornos vazios. Abortando otimização.")
+        return
+        
     tickers = list(prices.columns)
     n = len(tickers)
     
@@ -61,4 +68,10 @@ def run_optimization():
     print("Markowitz V2 concluído.")
 
 if __name__ == "__main__":
-    run_optimization()
+    import traceback
+    try:
+        run_optimization()
+    except Exception as e:
+        print(f"ERRO FATAL no Markowitz:\n{e}")
+        traceback.print_exc()
+        exit(1)

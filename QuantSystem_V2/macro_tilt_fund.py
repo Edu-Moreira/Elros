@@ -5,11 +5,15 @@ import os
 import config
 
 def run_macro_v2():
-    path_prices = f"{config.OUTPUT_DIR}/prices.csv"
+    prices = pd.read_csv(f"{config.OUTPUT_DIR}/prices.csv", index_col=0, parse_dates=True)
     path_macro = f"{config.OUTPUT_DIR}/macro_indicators.csv"
-    if not os.path.exists(path_prices): return
-
-    prices = pd.read_csv(path_prices, index_col=0, parse_dates=True)
+    
+    # Se não houver indicadores, usa pesos neutros (sem tilt)
+    if not os.path.exists(path_macro):
+        indicators = pd.DataFrame(index=prices.index)
+    else:
+        indicators = pd.read_csv(path_macro, index_col=0, parse_dates=True)
+    
     returns = prices.pct_change().dropna()
     
     # Cálculo do Scorecard (Ranking histórico de 3 anos)
@@ -84,4 +88,10 @@ def run_macro_v2():
     print("Macro Tilt V2 concluído.")
 
 if __name__ == "__main__":
-    run_macro_v2()
+    import traceback
+    try:
+        run_macro_v2()
+    except Exception as e:
+        print(f"ERRO no Macro Tilt:\n{e}")
+        traceback.print_exc()
+        exit(1)
