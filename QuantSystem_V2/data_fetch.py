@@ -50,7 +50,7 @@ def fetch_all_data():
     # 3. Dados Brasileiros (IBOV, PTAX, CDI)
     print("Baixando dados brasileiros...")
     tickers_br = config.BR_BENCHMARKS
-    raw_br = yf.download(list(tickers_br.values()), period="10y", session=session)['Close']
+    raw_br = yf.download(list(tickers_br.values()), period="10y")['Close']
     
     # Mapeamento explícito para evitar erro de ordem alfabética
     br_data = pd.DataFrame(index=raw_br.index)
