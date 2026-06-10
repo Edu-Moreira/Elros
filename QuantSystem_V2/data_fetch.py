@@ -20,7 +20,7 @@ def fetch_all_data():
     
     # 1. Preços do Universo SAA
     print(f"Baixando preços para: {len(config.INVESTABLE_UNIVERSE)} ativos...")
-    raw_data = yf.download(config.INVESTABLE_UNIVERSE, period="10y", threads=False, session=session)
+    raw_data = yf.download(config.INVESTABLE_UNIVERSE, period="10y", threads=False)
     
     if raw_data.empty or 'Close' not in raw_data:
         print("ERRO: O Yahoo Finance bloqueou a requisição ou retornou dados vazios.")
